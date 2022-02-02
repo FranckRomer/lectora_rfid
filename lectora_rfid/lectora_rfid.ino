@@ -6,11 +6,14 @@
 
 // These are the pins connected to the Wiegand D0 and D1 signals.
 // Ensure your board supports external Interruptions on these pins
-#define PIN_D0 2
-#define PIN_D1 3
+#define PIN_D0 19 
+#define PIN_D1 22
 
 // The object that handles the wiegand protocol
 Wiegand wiegand;
+
+//
+String Tarjeta_leida = "";
 
 // Initialize Wiegand reader
 void setup() {
@@ -61,13 +64,22 @@ void receivedData(uint8_t* data, uint8_t bits, const char* message) {
     Serial.print(message);
     Serial.print(bits);
     Serial.print("bits / ");
+    String x1 = "";
+    String x2 = "";
+    Tarjeta_leida = "";
+       
     //Print value in HEX
     uint8_t bytes = (bits+7)/8;
     for (int i=0; i<bytes; i++) {
-        Serial.print(data[i] >> 4, 16);
-        Serial.print(data[i] & 0xF, 16);
+        //Serial.print(data[i] >> 4, 16);
+        x1 = String(data[i] >> 4, HEX);
+        //Serial.print(data[i] & 0xF, 16);
+        x2 = String(data[i] & 0xF, HEX);
+        Tarjeta_leida = Tarjeta_leida + x1 + x2;
     }
     Serial.println();
+    Tarjeta_leida.toUpperCase();
+    Serial.println(Tarjeta_leida);
 }
 
 // Notifies when an invalid transmission is detected
